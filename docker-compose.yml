@@ -1,0 +1,28 @@
+version: '3.8'
+
+volumes:
+  demo_docker_db:
+
+services:
+  demo_docker_db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: demo_docker_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - demo_docker_db:/var/lib/postgresql/data
+
+  app:
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - demo_docker_db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://demo_docker_db:5432/demo_docker_db
+
